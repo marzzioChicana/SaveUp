@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { tap } from 'rxjs/operators';
 import { FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router'
 import { PaymentService } from 'src/app/services/payment.service';
@@ -68,30 +67,30 @@ export class ConfirmPurchaseComponent {
 
     this.paymentService.getPayById(this.order?.payId).subscribe(
       (data: any) => {
-        if(data.payAddress != null) {
+        if(data.payAddress) {
           const newPoints = this.authService.getUser()?.points + 1;
     
-        this.userService.updateCustomerPoints(newPoints).subscribe(
-          (data: any) => {
-            console.log(data);
-          },
-          (error: any) => {
-            console.log(error);
-          }
-        );
+          this.userService.updateCustomerPoints(newPoints).subscribe(
+            (data: any) => {
+              console.log(data);
+            },
+            (error: any) => {
+              console.log(error);
+            }
+          );
     
-        this.paymentService.createPayment().subscribe(
-          (payment: any) => {
-            this.orderService.createOrder(payment.id).subscribe(
-              (order: any) => {
-                this.authService.setOrder(order);
-                console.log(this.authService.getOrder());
-              }
-            );
-          }
-        );
+          this.paymentService.createPayment().subscribe(
+            (payment: any) => {
+              this.orderService.createOrder(payment.id).subscribe(
+                (order: any) => {
+                  this.authService.setOrder(order);
+                  console.log(this.authService.getOrder());
+                }
+              );
+            }
+          );
     
-        this.router.navigate(['/purchase/successful']);
+          this.router.navigate(['/purchase/successful']);
 
         } else {
           alert('Las credenciales son incorrectas')
